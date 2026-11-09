@@ -162,6 +162,45 @@ section{padding:84px 0;border-top:1px solid var(--rule)}
 .aside-box{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px}
 .aside-box ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:.4rem;color:var(--ink-2);font-size:1.02rem}
 .note-small{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);line-height:1.5}
+.dtable-wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:14px}
+.dtable{width:100%;border-collapse:collapse;font-size:.95rem;min-width:560px}
+.dtable th,.dtable td{padding:11px 16px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+.dtable tr:last-child td{border-bottom:0}
+.dtable th{font-family:var(--mono);font-size:.7rem;font-weight:400;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.dtable td.n,.dtable th.n{text-align:right;font-family:var(--mono);font-size:.86rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dtable td.strong{font-family:var(--display);font-weight:600}
+.dtable tr.tot td{color:var(--ink-3)}
+.dtable .hi{color:var(--accent);font-weight:600}
+.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:2px 8px;border-radius:999px;border:1px solid var(--rule);color:var(--ink-2);white-space:nowrap}
+.tag.q{border-color:var(--calm);color:var(--calm)}
+.funnel{display:flex;flex-direction:column;gap:12px}
+.frow{display:grid;grid-template-columns:230px 1fr 70px;gap:14px;align-items:center;font-size:.98rem}
+.frow .lab{color:var(--ink-2);line-height:1.25}
+.frow .lab small{display:block;font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+.frow .fb{height:26px;background:var(--ink-2);border-radius:0 4px 4px 0}
+.frow:last-child .fb{background:var(--accent)}
+.frow .v{font-family:var(--mono);font-size:.88rem;text-align:right}
+.band{display:flex;height:34px;gap:2px;margin:14px 0 10px}
+.band > div{height:100%}
+.band > div:first-child{border-radius:4px 0 0 4px}
+.band > div:last-child{border-radius:0 4px 4px 0}
+.band-leg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.95rem;color:var(--ink-2)}
+.band-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.band-leg b{font-family:var(--mono);font-weight:600;color:var(--ink)}
+.boxes{display:flex;flex-direction:column;gap:14px;margin-top:22px}
+.brow{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;font-size:.95rem}
+.brow .lab{color:var(--ink-2);line-height:1.2}
+.brow .lab small{display:block;font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+.btrack{position:relative;height:30px}
+.bbox{position:absolute;top:3px;bottom:3px;border:1.5px solid var(--ink-2);background:var(--accent-soft);border-radius:4px}
+.bbox.neg{background:transparent}
+.bmed{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--accent);border-radius:2px}
+.bmed.neg{background:var(--ink)}
+.blim{position:absolute;top:-8px;bottom:-8px;border-left:1.5px dashed var(--ink-3)}
+.baxis{display:grid;grid-template-columns:200px 1fr;gap:14px;margin-top:8px}
+.baxis .t{position:relative;height:16px;font-family:var(--mono);font-size:.68rem;color:var(--ink-3)}
+.baxis .t span{position:absolute;transform:translateX(-50%)}
+@media (max-width:860px){ .frow{grid-template-columns:1fr 60px} .frow .lab{grid-column:1 / -1} .brow,.baxis{grid-template-columns:110px 1fr} }
 .br{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .br a.card{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;transition:border-color .2s}
 .br a.card:hover{border-color:var(--accent)}
@@ -196,6 +235,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
   <span>Projeto A2 · Julia Alcântara · 2026</span>
   <nav aria-label="Seções">
     <a href="#o-que-e">O que é</a>
+    <a href="#dados">Dados</a>
     <a href="#quem">Quem</a>
     <a href="#silenciosa">Silenciosa</a>
     <a href="#sintomas">Sintomas</a>
@@ -306,20 +346,130 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
   </div>
 </section>
 
+<!-- DADOS -->
+<section id="dados">
+  <div class="sec-head">
+    <span class="kicker">02 · Os dados</span>
+    <h2>De onde vêm os números</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:28px">
+      <p class="col">A NHANES é a grande pesquisa de saúde do governo dos Estados Unidos. Ela entrevista as pessoas, faz exame físico e colhe sangue. Juntei três edições (2007–2008, 2009–2010 e 2011–2012) e uni quatro arquivos pelo número de identificação de cada participante: exames da tireoide, dados demográficos, questionário médico e medidas do corpo.</p>
+
+      <div class="chart">
+        <div class="chart-title">Como cheguei a 8.699 pessoas</div>
+        <div class="chart-sub">limpeza da base, passo a passo</div>
+        <div class="funnel" style="margin-top:20px">
+          <div class="frow"><span class="lab">Participantes com exame da tireoide<small>3 edições juntas</small></span><div class="fb" style="width:100%"></div><span class="v num">11.638</span></div>
+          <div class="frow"><span class="lab">Com 20 anos ou mais<small>a pergunta de diagnóstico só é feita a adultos</small></span><div class="fb" style="width:82.1%"></div><span class="v num">9.555</span></div>
+          <div class="frow"><span class="lab">Com o anti-TPO medido<small>base final da análise</small></span><div class="fb" style="width:74.7%"></div><span class="v num">8.699</span></div>
+        </div>
+        <p class="chart-note">Respostas "não sei" e "recusou" viraram valor ausente. Os valores que faltavam não foram preenchidos, para não inventar informação: cada análise usa as pessoas que têm aquela informação.</p>
+      </div>
+
+      <div class="stack">
+        <h3>As variáveis usadas</h3>
+        <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Variável</th><th>Tipo</th><th>Origem</th><th class="n">Ausentes</th></tr></thead>
+            <tbody>
+<tr><td class="strong">Sexo</td><td><span class="tag">Categórica nominal</span></td><td>Entrevista</td><td class="n">0%</td></tr>
+<tr><td class="strong">Raça/etnia</td><td><span class="tag">Categórica nominal</span></td><td>Entrevista</td><td class="n">0%</td></tr>
+<tr><td class="strong">Escolaridade</td><td><span class="tag">Categórica ordinal</span></td><td>Entrevista</td><td class="n">0,1%</td></tr>
+<tr><td class="strong">Faixa etária</td><td><span class="tag">Categórica ordinal</span></td><td>Criada a partir da idade</td><td class="n">0%</td></tr>
+<tr><td class="strong">Categoria de IMC</td><td><span class="tag">Categórica ordinal</span></td><td>Criada a partir do IMC</td><td class="n">1,4%</td></tr>
+<tr><td class="strong">Já recebeu diagnóstico de tireoide?</td><td><span class="tag">Categórica nominal</span></td><td>Entrevista</td><td class="n">0,2%</td></tr>
+<tr><td class="strong">Anti-TPO positivo/negativo</td><td><span class="tag">Categórica nominal</span></td><td>Criada a partir do anti-TPO</td><td class="n">0%</td></tr>
+<tr><td class="strong">Idade (anos)</td><td><span class="tag q">Quantitativa discreta</span></td><td>Entrevista</td><td class="n">0%</td></tr>
+<tr><td class="strong">IMC (kg/m²)</td><td><span class="tag q">Quantitativa contínua</span></td><td>Exame físico</td><td class="n">1,4%</td></tr>
+<tr><td class="strong">Renda / linha de pobreza</td><td><span class="tag q">Quantitativa contínua</span></td><td>Entrevista</td><td class="n">9,0%</td></tr>
+<tr><td class="strong">TSH (mUI/L)</td><td><span class="tag q">Quantitativa contínua</span></td><td>Exame de sangue</td><td class="n">0,02%</td></tr>
+<tr><td class="strong">T4 livre (ng/dL)</td><td><span class="tag q">Quantitativa contínua</span></td><td>Exame de sangue</td><td class="n">0%</td></tr>
+<tr><td class="strong">Anti-TPO (UI/mL)</td><td><span class="tag q">Quantitativa contínua</span></td><td>Exame de sangue</td><td class="n">0%</td></tr>
+<tr><td class="strong">Antitireoglobulina (UI/mL)</td><td><span class="tag q">Quantitativa contínua</span></td><td>Exame de sangue</td><td class="n">0,6%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="chart-note" style="margin-top:0">A maior perda é na renda (9%). Em todas as outras variáveis, faltam menos de 1,5% dos valores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- QUANTOS -->
 <section id="quantos">
   <div class="sec-head">
-    <span class="kicker">02 · Quantos</span>
+    <span class="kicker">03 · Quantos</span>
     <h2>1 em cada 9 adultos tem o anticorpo</h2>
   </div>
   <div class="body-grid">
     <div class="stack">
-      <p class="col">Os dados vêm da NHANES, a grande pesquisa de saúde do governo dos Estados Unidos. Ela entrevista as pessoas, faz exame físico e colhe sangue. Usei as edições de 2007 a 2012.</p>
+      <p class="col">Contando quem tem o anti-TPO positivo (9 UI/mL ou mais) na base e usando os pesos da pesquisa para estimar o total do país:</p>
       <div class="bigrow">
         <div class="big"><div class="n num">11,1<small>%</small></div><p>das 8.699 pessoas pesquisadas têm o anticorpo. São 967 pessoas.</p></div>
         <div class="big"><div class="n num">24,4<small> mi</small></div><p>é o número estimado de adultos com o anticorpo nos Estados Unidos, 12% dos adultos do país.</p></div>
         <div class="big accent"><div class="n num">16,9<small> mi</small></div><p>dessas pessoas nunca ouviram de um médico que têm problema na tireoide.</p></div>
       </div>
+
+      <h3 style="margin-top:28px">Como os valores se distribuem</h3>
+      <p class="col">A maioria das pessoas tem o anti-TPO muito baixo, e poucas têm valores enormes. Por isso a média (20,9) fica muito longe da mediana (0,6). Neste site, uso a mediana para falar do caso comum.</p>
+      <div class="two">
+        <div class="chart">
+          <div class="chart-title">Anti-TPO</div>
+          <div class="chart-sub">% das 8.699 pessoas em cada faixa · UI/mL</div>
+          <div class="band" role="img" aria-label="50,9% até 0,6; 38,0% entre 0,6 e 9; 11,1% com 9 ou mais">
+            <div style="width:50.9%;background:var(--neg)"></div><div style="width:38%;background:var(--ink-3)"></div><div style="width:11.1%;background:var(--accent)"></div>
+          </div>
+          <div class="band-leg">
+            <span><i style="background:var(--neg)"></i>até 0,6: <b>50,9%</b></span>
+            <span><i style="background:var(--ink-3)"></i>entre 0,6 e 9: <b>38,0%</b></span>
+            <span><i style="background:var(--accent)"></i>9 ou mais: <b>11,1%</b></span>
+          </div>
+        </div>
+        <div class="chart">
+          <div class="chart-title">TSH</div>
+          <div class="chart-sub">% das 8.697 pessoas em cada faixa · mUI/L</div>
+          <div class="band" role="img" aria-label="2,3% abaixo de 0,34; 93,2% normal; 4,5% acima de 4,5">
+            <div style="width:2.3%;background:var(--calm)"></div><div style="width:93.2%;background:var(--neg)"></div><div style="width:4.5%;background:var(--accent)"></div>
+          </div>
+          <div class="band-leg">
+            <span><i style="background:var(--calm)"></i>baixo (&lt; 0,34): <b>2,3%</b></span>
+            <span><i style="background:var(--neg)"></i>normal: <b>93,2%</b></span>
+            <span><i style="background:var(--accent)"></i>alto (&gt; 4,5): <b>4,5%</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dtable-wrap">
+        <table class="dtable">
+          <thead><tr><th>Variável</th><th class="n">Média</th><th class="n">Mediana</th><th class="n">Q1</th><th class="n">Q3</th><th class="n">Desvio padrão</th><th class="n">Atípicos</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Idade (anos)</td><td class="n">50,0</td><td class="n">50,0</td><td class="n">35,0</td><td class="n">64,0</td><td class="n">17,8</td><td class="n">0%</td></tr>
+            <tr><td class="strong">IMC (kg/m²)</td><td class="n">28,9</td><td class="n">27,9</td><td class="n">24,2</td><td class="n">32,2</td><td class="n">6,7</td><td class="n">2,9%</td></tr>
+            <tr><td class="strong">TSH (mUI/L)</td><td class="n">2,00</td><td class="n">1,55</td><td class="n">1,04</td><td class="n">2,34</td><td class="n">2,84</td><td class="n">5,1%</td></tr>
+            <tr><td class="strong">T4 livre (ng/dL)</td><td class="n">0,80</td><td class="n">0,80</td><td class="n">0,70</td><td class="n">0,90</td><td class="n">0,18</td><td class="n">1,7%</td></tr>
+            <tr><td class="strong">Anti-TPO (UI/mL)</td><td class="n hi">20,92</td><td class="n hi">0,60</td><td class="n">0,30</td><td class="n">1,60</td><td class="n">94,19</td><td class="n">16,2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="chart-note" style="margin-top:0">Atípicos pela regra de Tukey (abaixo de Q1 − 1,5 × IIQ ou acima de Q3 + 1,5 × IIQ). No anti-TPO e no TSH, os atípicos não foram removidos: eles são justamente as pessoas com a tireoide alterada. Entre os 443 atípicos do TSH, 35,7% têm o anticorpo, contra 11,1% na base toda.</p>
+
+      <h3 style="margin-top:28px">Amostra e população</h3>
+      <p class="col">A NHANES escolhe de propósito mais pessoas de alguns grupos, como adultos negros e mexicano-americanos. Por isso, o percentual da amostra não é igual ao da população. Usando os pesos da pesquisa, dá para estimar o percentual real nos Estados Unidos.</p>
+      <div class="dtable-wrap">
+        <table class="dtable">
+          <thead><tr><th>Grupo</th><th class="n">Com o anticorpo na amostra</th><th class="n">Estimativa para a população</th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Todos os adultos</td><td class="n">11,1%</td><td class="n">12,0%</td></tr>
+            <tr><td class="strong">Mulheres</td><td class="n">14,6%</td><td class="n">15,5%</td></tr>
+            <tr><td class="strong">Homens</td><td class="n">7,6%</td><td class="n">8,2%</td></tr>
+            <tr><td class="strong">20–39 anos</td><td class="n">7,2%</td><td class="n">7,3%</td></tr>
+            <tr><td class="strong">40–59 anos</td><td class="n">12,5%</td><td class="n">14,3%</td></tr>
+            <tr><td class="strong">60 anos ou mais</td><td class="n">13,6%</td><td class="n">15,1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="chart-note" style="margin-top:0">A estimativa fica um pouco acima porque a amostra tem mais adultos negros do que a população, e nesse grupo o anticorpo é menos comum. O padrão continua o mesmo: mulheres com cerca do dobro dos homens e um salto depois dos 40 anos.</p>
     </div>
   </div>
 </section>
@@ -327,7 +477,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- QUEM -->
 <section id="quem">
   <div class="sec-head">
-    <span class="kicker">03 · Quem</span>
+    <span class="kicker">04 · Quem</span>
     <h2>Mais comum em mulheres e depois dos 40 anos</h2>
   </div>
   <div class="body-grid">
@@ -352,7 +502,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- SILENCIOSA -->
 <section id="silenciosa">
   <div class="sec-head">
-    <span class="kicker">04 · Silenciosa</span>
+    <span class="kicker">05 · Silenciosa</span>
     <h2>7 em cada 10 pessoas com o anticorpo não sabem</h2>
   </div>
   <div class="body-grid">
@@ -365,6 +515,20 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
         <div class="stack" style="gap:12px" id="stacks"></div>
         <p class="chart-note">Para comparar: entre quem não tem o anticorpo, 7,1% já ouviram que têm problema na tireoide. Quem tem o anticorpo recebe mais diagnóstico (28,8%), mas a maioria continua sem saber.</p>
       </div>
+      <div class="stack">
+        <h3>A tabela por trás do gráfico</h3>
+        <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th></th><th class="n">Sem diagnóstico</th><th class="n">Com diagnóstico</th><th class="n">Total</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Com o anticorpo</td><td class="n hi">686 (71,2%)</td><td class="n">278 (28,8%)</td><td class="n">964</td></tr>
+              <tr><td class="strong">Sem o anticorpo</td><td class="n">7.171 (92,9%)</td><td class="n">545 (7,1%)</td><td class="n">7.716</td></tr>
+              <tr class="tot"><td>Total</td><td class="n">7.857</td><td class="n">823</td><td class="n">8.680</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="chart-note" style="margin-top:0">Percentuais por linha. O total é 8.680, e não 8.699, porque 19 pessoas não responderam à pergunta sobre diagnóstico.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -372,7 +536,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- NÃO INOFENSIVA -->
 <section id="nao-inofensiva">
   <div class="sec-head">
-    <span class="kicker">05 · Mas não inofensiva</span>
+    <span class="kicker">06 · Mas não inofensiva</span>
     <h2>Mesmo sem sintomas, a tireoide já pode estar mudando</h2>
   </div>
   <div class="body-grid">
@@ -395,6 +559,33 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
           <p class="chart-note">Por quê? Quando a tireoide começa a falhar, o cérebro aumenta o TSH e força a glândula a trabalhar mais. Assim, o T4 continua normal por um tempo. Por isso, olhar só o T4 não mostra o começo da doença.</p>
         </div>
       </div>
+
+      <div class="chart">
+        <div class="chart-title">TSH nos 4 grupos</div>
+        <div class="chart-sub">caixa = do Q1 ao Q3 (metade do meio das pessoas) · traço = mediana · linha tracejada = limite de 4,5 · mUI/L</div>
+        <div class="boxes">
+<div class="brow" data-tip="Sem o anticorpo, sem diagnóstico|7.171|1.03|1.51|2.2"><span class="lab">Sem o anticorpo, sem diagnóstico<small>n = 7.171</small></span><div class="btrack"><div class="bbox neg" style="left:20.60%;width:23.40%"></div><div class="bmed neg" style="left:30.20%"></div><div class="blim" style="left:90%"></div></div></div>
+<div class="brow" data-tip="Com o anticorpo, sem diagnóstico|685|1.38|2.17|3.33"><span class="lab">Com o anticorpo, sem diagnóstico<small>n = 685</small></span><div class="btrack"><div class="bbox" style="left:27.60%;width:39.00%"></div><div class="bmed" style="left:43.40%"></div><div class="blim" style="left:90%"></div></div></div>
+<div class="brow" data-tip="Sem o anticorpo, com diagnóstico|545|0.77|1.53|2.57"><span class="lab">Sem o anticorpo, com diagnóstico<small>n = 545</small></span><div class="btrack"><div class="bbox neg" style="left:15.40%;width:36.00%"></div><div class="bmed neg" style="left:30.60%"></div><div class="blim" style="left:90%"></div></div></div>
+<div class="brow" data-tip="Com o anticorpo, com diagnóstico|277|0.92|2.32|3.93"><span class="lab">Com o anticorpo, com diagnóstico<small>n = 277</small></span><div class="btrack"><div class="bbox" style="left:18.40%;width:60.20%"></div><div class="bmed" style="left:46.40%"></div><div class="blim" style="left:90%"></div></div></div>
+        </div>
+        <div class="baxis" aria-hidden="true"><div></div><div class="t"><span style="left:0%">0</span><span style="left:20%">1</span><span style="left:40%">2</span><span style="left:60%">3</span><span style="left:80%">4</span><span style="left:100%">5</span></div></div>
+        <p class="chart-note">Quem tem o anticorpo e nunca foi diagnosticado tem o TSH mediano de 2,17, contra 1,51 de quem não tem o anticorpo. Nos grupos com diagnóstico, a caixa começa mais baixo (Q1 de 0,77 e 0,92), provavelmente porque muitas dessas pessoas já tomam remédio, que baixa o TSH.</p>
+      </div>
+
+      <div class="stack">
+        <h3>Os dois anticorpos andam juntos</h3>
+        <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th></th><th class="n">Antitireoglobulina positiva</th><th class="n">Antitireoglobulina negativa</th><th class="n">Total</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">Com anti-TPO</td><td class="n hi">339 (35,8%)</td><td class="n">608 (64,2%)</td><td class="n">947</td></tr>
+              <tr><td class="strong">Sem anti-TPO</td><td class="n">277 (3,6%)</td><td class="n">7.426 (96,4%)</td><td class="n">7.703</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="chart-note" style="margin-top:0">Mais de 1 em cada 3 pessoas com anti-TPO também tem o outro anticorpo da tireoide, contra menos de 4 em cada 100 de quem não tem. Os dois marcam o mesmo ataque à tireoide.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -402,7 +593,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- SINTOMAS -->
 <section id="sintomas">
   <div class="sec-head">
-    <span class="kicker">06 · Sintomas</span>
+    <span class="kicker">07 · Sintomas</span>
     <h2>O que a pessoa pode sentir</h2>
   </div>
   <div class="body-grid">
@@ -444,7 +635,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- BRASIL -->
 <section id="brasil">
   <div class="sec-head">
-    <span class="kicker">07 · E no Brasil?</span>
+    <span class="kicker">08 · E no Brasil?</span>
     <h2>Os dados são americanos. A pergunta é nossa</h2>
   </div>
   <div class="body-grid">
@@ -469,7 +660,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- COMO LER -->
 <section id="como-ler">
   <div class="sec-head">
-    <span class="kicker">08 · Como ler os números</span>
+    <span class="kicker">09 · Como ler os números</span>
     <h2>As contas por trás do site</h2>
   </div>
   <div class="body-grid">
@@ -485,7 +676,7 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
 <!-- LIMITES -->
 <section id="limites">
   <div class="sec-head">
-    <span class="kicker">09 · Limites e fontes</span>
+    <span class="kicker">10 · Limites e fontes</span>
     <h2>O que estes dados não dizem</h2>
   </div>
   <div class="body-grid">
@@ -631,6 +822,12 @@ footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mo
     bindTip(row.querySelector('.s'), '<b>'+r[0]+'</b><br>'+int(r[2])+' de '+int(r[3])+' nunca receberam diagnóstico ('+fmt(r[1])+'%)');
     bindTip(row.querySelector('.c'), '<b>'+r[0]+'</b><br>'+int(r[3]-r[2])+' de '+int(r[3])+' já receberam diagnóstico ('+fmt(100-r[1])+'%)');
   });
+
+  document.querySelectorAll('.brow').forEach(function(b){
+    var t=b.dataset.tip.split('|');
+    bindTip(b,'<b>'+t[0]+'</b><br>n = '+t[1]+'<br>Q1 '+fmt2(t[2])+' · mediana '+fmt2(t[3])+' · Q3 '+fmt2(t[4]));
+  });
+  function fmt2(v){ return (+v).toFixed(2).replace('.',','); }
 
   /* ---------- TSH elevado ---------- */
   renderBars(document.getElementById('tshbars'), [
