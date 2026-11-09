@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hashimoto, a doença silenciosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Plano: papel de laudo frio + tinta violeta-escura; rosa = anti-TPO+ / sem diagnóstico, azul = com diagnóstico.
+   Layout: coluna de leitura estreita; gráficos e o "laudo" saem da coluna em blocos largos. */
+:root{
+  --paper:#f4f5f7; --panel:#ffffff; --ink:#1c1a2e; --ink-2:#55536a; --ink-3:#8a889c;
+  --rule:#dcdbe4; --accent:#c2185b; --calm:#3a62d6; --neg:#c9c7d4; --accent-soft:#f6dbe6;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Newsreader", Georgia, "Times New Roman", serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#15141f; --panel:#1d1c2a; --ink:#eceaf3; --ink-2:#aeabc2; --ink-3:#7c798f;
+    --rule:#2e2c3f; --accent:#e0508a; --calm:#6a8cf0; --neg:#3f3d52; --accent-soft:#3a1f2d;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15141f; --panel:#1d1c2a; --ink:#eceaf3; --ink-2:#aeabc2; --ink-3:#7c798f;
+  --rule:#2e2c3f; --accent:#e0508a; --calm:#6a8cf0; --neg:#3f3d52; --accent-soft:#3a1f2d;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.15rem;line-height:1.6}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.col{max-width:660px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.02em}
+h2{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:800;line-height:1.05}
+h3{font-size:1.15rem;font-weight:600;letter-spacing:-.005em}
+p{margin:0}
+.stack{display:flex;flex-direction:column;gap:1.1rem}
+.kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-variant-numeric:tabular-nums}
+em.hl{font-style:normal;color:var(--accent);font-weight:500}
+
+/* topo */
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:.78rem;color:var(--ink-3)}
+.top nav{display:flex;gap:18px;flex-wrap:wrap}
+.top nav a{color:var(--ink-2);text-decoration:none}
+.top nav a:hover{color:var(--accent)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:64px 0 72px}
+.hero h1{font-size:clamp(2.6rem,6.4vw,5rem);font-weight:800;line-height:.95}
+.hero h1 span{display:block;font-weight:400;color:var(--ink-2)}
+.hero .lede{font-size:1.3rem;color:var(--ink-2);max-width:34ch}
+.waffle-box{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:22px}
+.waffle{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;margin:14px 0 16px}
+.dot{aspect-ratio:1;border-radius:50%;background:var(--neg);transition:background .45s ease, transform .45s ease, box-shadow .45s ease}
+.dot.pos{background:var(--ink-2)}
+.dot.sem{background:var(--accent)}
+.dot.com{background:var(--calm)}
+.dot.tsh{box-shadow:0 0 0 3px var(--panel),0 0 0 5px var(--accent);transform:scale(.82)}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.steps button{font-family:var(--mono);font-size:.74rem;border:1px solid var(--rule);background:transparent;color:var(--ink-2);padding:6px 10px;border-radius:999px;cursor:pointer}
+.steps button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.steps button:hover{border-color:var(--ink-2)}
+.wcap{font-family:var(--display);font-size:1.25rem;line-height:1.25;min-height:3.2em;margin-top:6px}
+.wcap b{color:var(--accent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:.72rem;color:var(--ink-2);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+
+/* seções */
+section{padding:84px 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:120px 1fr;gap:24px;margin-bottom:36px}
+.sec-head .kicker{padding-top:.7rem}
+.body-grid{display:grid;grid-template-columns:120px 1fr;gap:24px}
+.body-grid > *{grid-column:2}
+
+.personal{background:var(--accent-soft);border-radius:14px;padding:28px 30px;max-width:720px;font-size:1.22rem;font-style:italic}
+.personal .sig{font-style:normal;font-family:var(--mono);font-size:.78rem;color:var(--ink-2);margin-top:14px}
+
+/* eixo diagrama */
+.explain{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.diagram{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram text{font-family:var(--mono);font-size:11px;fill:var(--ink-2)}
+.diagram .lbl{font-family:var(--display);font-size:14px;font-weight:600;fill:var(--ink)}
+
+/* laudo */
+.laudo{margin-top:40px;background:var(--panel);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.laudo-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px dashed var(--rule);font-family:var(--mono);font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.laudo-scroll{overflow-x:auto}
+.laudo table{width:100%;border-collapse:collapse;font-size:.98rem;min-width:620px}
+.laudo th,.laudo td{text-align:left;padding:14px 20px;border-bottom:1px solid var(--rule);vertical-align:top}
+.laudo tr:last-child td{border-bottom:0}
+.laudo th{font-family:var(--mono);font-size:.72rem;font-weight:400;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.laudo td.ex{font-family:var(--display);font-weight:600;white-space:nowrap}
+.laudo td.ref{font-family:var(--mono);font-size:.86rem;white-space:nowrap;color:var(--accent)}
+
+/* números grandes */
+.bigrow{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.big{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:22px}
+.big .n{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,4.6vw,3.4rem);line-height:1;letter-spacing:-.03em}
+.big .n small{font-size:.45em;font-weight:600;letter-spacing:0}
+.big p{font-size:1rem;color:var(--ink-2);margin-top:10px;line-height:1.45}
+.big.accent .n{color:var(--accent)}
+
+/* gráficos de barra */
+.chart{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;position:relative}
+.chart-title{font-family:var(--display);font-weight:600;font-size:1.05rem}
+.chart-sub{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);margin-top:2px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 18px}
+.tabs button{font-family:var(--mono);font-size:.78rem;border:1px solid var(--rule);background:transparent;color:var(--ink-2);padding:7px 12px;border-radius:8px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bars{--lw:170px;--vw:56px;display:flex;flex-direction:column;gap:10px;position:relative}
+.bar-row{display:grid;grid-template-columns:170px 1fr 56px;gap:12px;align-items:center;font-size:.95rem}
+.bar-row .lab{color:var(--ink-2);line-height:1.2}
+.track{height:22px;position:relative}
+.fill{height:100%;background:var(--accent);border-radius:0 4px 4px 0;transition:width .5s ease;min-width:2px}
+.bar-row .val{font-family:var(--mono);font-size:.85rem;text-align:right}
+.refline{left:calc(var(--lw) + 12px + (100% - var(--lw) - var(--vw) - 24px) * var(--r));position:absolute;top:-6px;bottom:-6px;border-left:1.5px dashed var(--ink-3);pointer-events:none}
+.refline span{position:absolute;top:-18px;left:4px;font-family:var(--mono);font-size:.68rem;color:var(--ink-3);white-space:nowrap}
+.bars-wrap{position:relative;padding-top:20px}
+.chart-note{font-size:1rem;color:var(--ink-2);margin-top:18px;max-width:62ch}
+.axis{display:grid;grid-template-columns:170px 1fr 56px;gap:12px;margin-top:6px;font-family:var(--mono);font-size:.68rem;color:var(--ink-3)}
+.axis div:nth-child(2){display:flex;justify-content:space-between}
+
+.stack100{display:flex;height:30px;gap:2px}
+.stack100 > div{height:100%;display:flex;align-items:center;padding:0 8px;font-family:var(--mono);font-size:.78rem;color:#fff;white-space:nowrap;overflow:hidden}
+.stack100 .s{background:var(--accent);border-radius:4px 0 0 4px}
+.stack100 .c{background:var(--calm);border-radius:0 4px 4px 0}
+.srow{display:grid;grid-template-columns:170px 1fr;gap:12px;align-items:center;font-size:.95rem}
+.srow .lab{color:var(--ink-2);line-height:1.2}
+.srow .lab small{display:block;font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+
+.or-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.or{border-top:3px solid var(--ink);padding-top:10px}
+.or.up{border-color:var(--accent)} .or.down{border-color:var(--calm)} .or.flat{border-color:var(--neg)}
+.or .x{font-family:var(--display);font-weight:800;font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.or p{font-size:.92rem;color:var(--ink-2);margin-top:6px;line-height:1.35}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.75rem;padding:7px 10px;border-radius:6px;opacity:0;transition:opacity .12s;z-index:10;max-width:240px;line-height:1.4}
+
+/* glossário */
+.gloss{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.gloss .g{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 20px}
+.gloss .g h3{margin-bottom:6px}
+.gloss .g p{font-size:.98rem;color:var(--ink-2);line-height:1.5}
+.gloss .g .ex{font-family:var(--mono);font-size:.76rem;color:var(--accent);margin-top:10px;display:block}
+
+.sint{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.sint li{list-style:none;background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:12px 14px;font-size:1rem;line-height:1.35}
+.sint{margin:0;padding:0}
+.aside-box{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px}
+.aside-box ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:.4rem;color:var(--ink-2);font-size:1.02rem}
+.note-small{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);line-height:1.5}
+.br{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.br a.card{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;transition:border-color .2s}
+.br a.card:hover{border-color:var(--accent)}
+.br a.card .kicker{display:block;margin-bottom:6px}
+.br a.card p{font-size:1rem;color:var(--ink-2);margin-top:6px;line-height:1.45}
+
+ul.lim{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:.5rem;color:var(--ink-2);font-size:1.05rem}
+.refs{font-size:.95rem;color:var(--ink-2);display:flex;flex-direction:column;gap:.5rem}
+
+.closing{font-family:var(--display);font-size:clamp(1.6rem,3.4vw,2.4rem);font-weight:600;line-height:1.15;max-width:24ch}
+footer{border-top:1px solid var(--rule);padding:32px 0 56px;font-family:var(--mono);font-size:.76rem;color:var(--ink-3);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .hero,.explain,.two,.br{grid-template-columns:1fr}
+  .hero{gap:36px;padding-top:40px}
+  .sec-head,.body-grid{grid-template-columns:1fr;gap:10px}
+  .body-grid > *{grid-column:1}
+  .bigrow,.gloss{grid-template-columns:1fr}
+  .or-grid{grid-template-columns:1fr 1fr}
+  .bar-row,.axis{grid-template-columns:110px 1fr 48px}
+  .bars{--lw:110px;--vw:48px}
+  .srow{grid-template-columns:1fr}
+  .top nav{display:none}
+}
+@media (max-width:420px){ .wrap{padding:0 16px} .or-grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <span>Projeto A2 · Julia Alcântara · 2026</span>
+  <nav aria-label="Seções">
+    <a href="#o-que-e">O que é</a>
+    <a href="#quem">Quem</a>
+    <a href="#silenciosa">Silenciosa</a>
+    <a href="#sintomas">Sintomas</a>
+    <a href="#brasil">Brasil</a>
+    <a href="#como-ler">Como ler</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="stack">
+    <span class="kicker">Tireoidite de Hashimoto · dados de 8.699 adultos</span>
+    <h1>Hashimoto, <span>a doença silenciosa</span></h1>
+    <p class="lede">Muita gente tem no sangue um sinal dessa doença e não sabe. Usei os dados de uma grande pesquisa de saúde para descobrir quantas pessoas são e quem elas são.</p>
+  </div>
+
+  <figure class="waffle-box" style="margin:0" aria-labelledby="wcap">
+    <span class="kicker">A cada 100 adultos</span>
+    <div class="waffle" id="waffle" aria-hidden="true"></div>
+    <p class="wcap" id="wcap" aria-live="polite"></p>
+    <div class="steps" role="group" aria-label="Passos da explicação">
+      <button type="button" id="st0" data-step="0">1 · Todos</button>
+      <button type="button" id="st1" data-step="1">2 · Com o anticorpo</button>
+      <button type="button" id="st2" data-step="2">3 · Sem diagnóstico</button>
+      <button type="button" id="st3" data-step="3">4 · Tireoide falhando</button>
+    </div>
+    <div class="legend" id="wlegend"></div>
+  </figure>
+</div>
+
+<!-- POR QUE -->
+<section id="por-que">
+  <div class="sec-head">
+    <span class="kicker">Por que este tema</span>
+    <div class="personal">
+      Descobri há pouco tempo que tenho tireoidite de Hashimoto. Pesquisando, vi que ela é comum, aparece mais em mulheres e pode ficar anos sem dar sinais. Quis usar dados para entender quem mais tem a doença e quantas pessoas têm o sinal dela no sangue sem saber.
+      <div class="sig">Julia Alcântara Ferraz Teixeira</div>
+    </div>
+  </div>
+</section>
+
+<!-- O QUE É -->
+<section id="o-que-e">
+  <div class="sec-head">
+    <span class="kicker">01 · O que é</span>
+    <h2>O que é o Hashimoto</h2>
+  </div>
+  <div class="body-grid">
+    <div class="explain">
+      <div class="stack">
+        <p>A tireoide é uma glândula pequena, em forma de borboleta, que fica na frente do pescoço. Ela produz hormônios que controlam o ritmo do corpo: energia, temperatura, batimentos do coração, intestino e humor.</p>
+        <p>Quem dá as ordens é o cérebro. Ele envia um recado chamado <strong>TSH</strong>, que quer dizer "produza mais hormônio". Quando a tireoide já produziu o suficiente, o cérebro diminui o TSH.</p>
+        <p>No Hashimoto, as defesas do corpo se confundem e passam a atacar a própria tireoide. Elas fazem isso com <strong>anticorpos</strong>. O principal deles se chama <strong>anti-TPO</strong>. Aos poucos, a tireoide perde força e produz menos hormônio. Isso se chama <em class="hl">hipotireoidismo</em>.</p>
+        <p>O ponto principal deste site: o anticorpo pode aparecer <strong>anos antes</strong> de a tireoide falhar. E, nessa fase, a pessoa geralmente não sente nada.</p>
+      </div>
+      <figure class="diagram" style="margin:0">
+        <svg viewBox="0 0 420 380" role="img" aria-labelledby="dg-t dg-d">
+          <title id="dg-t">Como a tireoide é regulada</title>
+          <desc id="dg-d">A hipófise libera TSH, que estimula a tireoide a produzir T4. O T4 volta ao cérebro e reduz o TSH. No Hashimoto, anticorpos anti-TPO atacam a tireoide.</desc>
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/></marker>
+          </defs>
+          <!-- hipófise -->
+          <rect x="140" y="20" width="140" height="54" rx="27" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="210" y="45" text-anchor="middle" class="lbl">Cérebro</text>
+          <text x="210" y="62" text-anchor="middle">(hipófise)</text>
+          <!-- seta TSH -->
+          <path d="M175 78 C150 130,150 170,170 205" fill="none" stroke="var(--ink-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="96" y="140">TSH</text>
+          <text x="70" y="156">"produza mais"</text>
+          <!-- seta T4 -->
+          <path d="M250 205 C270 170,270 130,245 78" fill="none" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ar)"/>
+          <text x="286" y="140">T4</text>
+          <text x="286" y="156">"já chega"</text>
+          <!-- tireoide borboleta -->
+          <g transform="translate(210 270)">
+            <path d="M-8,-20 C-40,-60 -95,-40 -90,10 C-86,50 -40,62 -14,30 Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <path d="M8,-20 C40,-60 95,-40 90,10 C86,50 40,62 14,30 Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <rect x="-16" y="-14" width="32" height="34" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+          </g>
+          <text x="210" y="352" text-anchor="middle" class="lbl">Tireoide</text>
+          <!-- anticorpos (Y) -->
+          <g stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" fill="none">
+            <path d="M92 250 l0 16 M92 250 l-8 -9 M92 250 l8 -9"/>
+            <path d="M330 236 l0 16 M330 236 l-8 -9 M330 236 l8 -9"/>
+            <path d="M110 318 l0 16 M110 318 l-8 -9 M110 318 l8 -9"/>
+            <path d="M318 312 l0 16 M318 312 l-8 -9 M318 312 l8 -9"/>
+          </g>
+          <text x="350" y="288" text-anchor="end" fill="var(--accent)" style="fill:var(--accent)">anti-TPO</text>
+        </svg>
+      </figure>
+    </div>
+
+    <div class="laudo" role="region" aria-label="Exames usados na análise">
+      <div class="laudo-h"><span>Os exames de sangue usados aqui</span><span>Valores de corte escolhidos antes de olhar os dados</span></div>
+      <div class="laudo-scroll">
+      <table>
+        <thead><tr><th>Exame</th><th>Valor que usei</th><th>Em palavras simples</th></tr></thead>
+        <tbody>
+          <tr><td class="ex">Anti-TPO</td><td class="ref num">9 UI/mL ou mais = positivo</td><td>Mostra se o corpo está produzindo anticorpos contra a tireoide. É o principal sinal do Hashimoto.</td></tr>
+          <tr><td class="ex">TSH</td><td class="ref num">acima de 4,5 mUI/L = alto</td><td>É o recado do cérebro para a tireoide. Quando sobe, quer dizer que a tireoide está produzindo pouco.</td></tr>
+          <tr><td class="ex">T4 livre</td><td class="ref num">valor típico: 0,80 ng/dL</td><td>É o próprio hormônio da tireoide. Costuma ser o último exame a mudar.</td></tr>
+          <tr><td class="ex">Antitireoglobulina</td><td class="ref num">4 UI/mL ou mais = positivo</td><td>Outro anticorpo contra a tireoide. Aparece em 36% de quem tem o anti-TPO positivo.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUANTOS -->
+<section id="quantos">
+  <div class="sec-head">
+    <span class="kicker">02 · Quantos</span>
+    <h2>1 em cada 9 adultos tem o anticorpo</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack">
+      <p class="col">Os dados vêm da NHANES, a grande pesquisa de saúde do governo dos Estados Unidos. Ela entrevista as pessoas, faz exame físico e colhe sangue. Usei as edições de 2007 a 2012.</p>
+      <div class="bigrow">
+        <div class="big"><div class="n num">11,1<small>%</small></div><p>das 8.699 pessoas pesquisadas têm o anticorpo. São 967 pessoas.</p></div>
+        <div class="big"><div class="n num">24,4<small> mi</small></div><p>é o número estimado de adultos com o anticorpo nos Estados Unidos, 12% dos adultos do país.</p></div>
+        <div class="big accent"><div class="n num">16,9<small> mi</small></div><p>dessas pessoas nunca ouviram de um médico que têm problema na tireoide.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUEM -->
+<section id="quem">
+  <div class="sec-head">
+    <span class="kicker">03 · Quem</span>
+    <h2>Mais comum em mulheres e depois dos 40 anos</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:24px">
+      <div class="chart">
+        <div class="chart-title">Quem tem o anticorpo</div>
+        <div class="chart-sub">% de pessoas com anti-TPO positivo em cada grupo · 8.699 adultos</div>
+        <div class="tabs" role="tablist" aria-label="Escolher grupo">
+          <button type="button" role="tab" id="tab-sexo" data-k="sexo">Sexo</button>
+          <button type="button" role="tab" id="tab-idade" data-k="idade">Idade</button>
+          <button type="button" role="tab" id="tab-etnia" data-k="etnia">Raça/etnia</button>
+          <button type="button" role="tab" id="tab-imc" data-k="imc">IMC</button>
+        </div>
+        <div class="bars-wrap"><div class="bars" id="bars" role="tabpanel"></div></div>
+        <div class="axis" aria-hidden="true"><div></div><div><span>0%</span><span>5%</span><span>10%</span><span>15%</span></div><div></div></div>
+        <p class="chart-note" id="bars-note"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SILENCIOSA -->
+<section id="silenciosa">
+  <div class="sec-head">
+    <span class="kicker">04 · Silenciosa</span>
+    <h2>7 em cada 10 pessoas com o anticorpo não sabem</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:24px">
+      <p class="col">A pesquisa fez uma pergunta simples: <em>"Algum médico já disse que você tem problema de tireoide?"</em> A maioria das pessoas com o anticorpo respondeu que não. Entre os homens, isso acontece ainda mais. Uma explicação possível é que homens vão menos ao médico e que a doença costuma ser vista como "coisa de mulher".</p>
+      <div class="chart">
+        <div class="chart-title">Pessoas com o anticorpo: já receberam diagnóstico?</div>
+        <div class="chart-sub">% de cada grupo · só quem tem anti-TPO positivo</div>
+        <div class="legend" style="margin:14px 0 18px"><span><i style="background:var(--accent)"></i>Nunca ouviram de um médico</span><span><i style="background:var(--calm)"></i>Já receberam diagnóstico</span></div>
+        <div class="stack" style="gap:12px" id="stacks"></div>
+        <p class="chart-note">Para comparar: entre quem não tem o anticorpo, 7,1% já ouviram que têm problema na tireoide. Quem tem o anticorpo recebe mais diagnóstico (28,8%), mas a maioria continua sem saber.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NÃO INOFENSIVA -->
+<section id="nao-inofensiva">
+  <div class="sec-head">
+    <span class="kicker">05 · Mas não inofensiva</span>
+    <h2>Mesmo sem sintomas, a tireoide já pode estar mudando</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:24px">
+      <p class="col">Ter o anticorpo não quer dizer estar doente. Mas, para uma parte dessas pessoas, a tireoide já começou a trabalhar menos, sem que elas saibam.</p>
+      <div class="two">
+        <div class="chart">
+          <div class="chart-title">TSH alto (acima de 4,5)</div>
+          <div class="chart-sub">% de cada grupo</div>
+          <div class="bars-wrap"><div class="bars" id="tshbars"></div></div>
+          <p class="chart-note">Quem tem o anticorpo fica com o TSH alto quase 5 vezes mais (14,8% contra 3,2%). E 13% de quem nunca foi diagnosticado já está com o TSH alto.</p>
+        </div>
+        <div class="chart">
+          <div class="chart-title">O hormônio T4 é igual nos dois grupos</div>
+          <div class="chart-sub">mediana, ng/dL</div>
+          <div style="display:flex;gap:28px;margin:22px 0 6px;flex-wrap:wrap">
+            <div><div class="kicker">Sem o anticorpo</div><div class="big" style="border:0;padding:6px 0;background:none"><div class="n num">0,80</div></div></div>
+            <div><div class="kicker">Com o anticorpo</div><div class="big" style="border:0;padding:6px 0;background:none"><div class="n num">0,80</div></div></div>
+          </div>
+          <p class="chart-note">Por quê? Quando a tireoide começa a falhar, o cérebro aumenta o TSH e força a glândula a trabalhar mais. Assim, o T4 continua normal por um tempo. Por isso, olhar só o T4 não mostra o começo da doença.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SINTOMAS -->
+<section id="sintomas">
+  <div class="sec-head">
+    <span class="kicker">06 · Sintomas</span>
+    <h2>O que a pessoa pode sentir</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:24px">
+      <p class="col">No começo, muitas pessoas com Hashimoto não sentem nada. Os sintomas aparecem quando a tireoide passa a produzir pouco hormônio e o corpo fica mais lento. Como são sintomas comuns, que podem ter muitas outras causas, é fácil não dar atenção a eles.</p>
+      <ul class="sint">
+        <li>Cansaço</li>
+        <li>Ganho de peso</li>
+        <li>Sentir frio quando os outros não sentem</li>
+        <li>Intestino preso</li>
+        <li>Pele seca e cabelo fino</li>
+        <li>Dores nos músculos e nas articulações</li>
+        <li>Menstruação mais forte ou irregular</li>
+        <li>Desânimo ou depressão</li>
+        <li>Dificuldade de memória</li>
+        <li>Coração mais lento</li>
+      </ul>
+      <p class="col">Algumas pessoas notam o pescoço mais inchado na frente (o chamado bócio), que geralmente não dói. Mais raramente, no início da doença, pode acontecer o contrário: coração acelerado, nervosismo e muito calor.</p>
+      <div class="two">
+        <div class="aside-box">
+          <h3>Quando procurar um médico</h3>
+          <ul>
+            <li>Se você sente vários desses sintomas ao mesmo tempo.</li>
+            <li>Se tem casos de doença da tireoide na família.</li>
+            <li>Se está grávida ou quer engravidar: sem tratamento, o hipotireoidismo pode causar problemas na gravidez.</li>
+          </ul>
+          <p style="font-size:1.02rem;color:var(--ink-2)">Os exames são de sangue: TSH, T4 livre e anti-TPO.</p>
+        </div>
+        <div class="aside-box">
+          <h3>Como é o tratamento</h3>
+          <p style="font-size:1.02rem;color:var(--ink-2)">Quando a tireoide já produz pouco hormônio, o médico costuma receitar o hormônio em comprimido (levotiroxina), tomado todos os dias. Se a tireoide ainda funciona bem, o médico pode só acompanhar com exames de tempos em tempos.</p>
+        </div>
+      </div>
+      <p class="note-small">Fontes desta seção: NIDDK (Instituto Nacional de Diabetes e Doenças Digestivas e Renais, EUA), Manual MSD e Office on Women's Health (EUA). Esta seção não usa os dados da NHANES.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BRASIL -->
+<section id="brasil">
+  <div class="sec-head">
+    <span class="kicker">07 · E no Brasil?</span>
+    <h2>Os dados são americanos. A pergunta é nossa</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:22px">
+      <p class="col">Os dados deste site são dos Estados Unidos, porque lá existe uma pesquisa que mede esses anticorpos em pessoas do país todo. Para olhar o Brasil, há dois caminhos:</p>
+      <div class="br">
+        <a class="card" href="https://trends.google.com/trends/explore?geo=BR&amp;q=Hashimoto">
+          <span class="kicker">Google Trends · interesse de busca</span>
+          <h3>Quanto o Brasil procura por "Hashimoto"</h3>
+          <p>Mostra se as pessoas estão procurando mais sobre a doença com o passar dos anos. Abrir no Google Trends ↗</p>
+        </a>
+        <a class="card" href="https://www.ibge.gov.br/estatisticas/sociais/saude/9160-pesquisa-nacional-de-saude.html">
+          <span class="kicker">IBGE · Pesquisa Nacional de Saúde</span>
+          <h3>PNS 2013 e 2019</h3>
+          <p>A grande pesquisa de saúde do Brasil, com entrevistas e exames. A edição deste ano ainda está sendo feita. Abrir no IBGE ↗</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO LER -->
+<section id="como-ler">
+  <div class="sec-head">
+    <span class="kicker">08 · Como ler os números</span>
+    <h2>As contas por trás do site</h2>
+  </div>
+  <div class="body-grid">
+    <div class="gloss">
+      <div class="g"><h3>Peso amostral</h3><p>Cada pessoa pesquisada representa milhares de pessoas do país. Somando esses "pesos", dá para estimar o total de pessoas nos Estados Unidos.</p><span class="ex">8.699 pessoas → 203,9 mi de adultos</span></div>
+      <div class="g"><h3>Média e mediana</h3><p>Quando poucas pessoas têm valores muito altos, elas puxam a média para cima. A mediana é o valor do meio da fila e mostra melhor o caso comum.</p><span class="ex">anti-TPO: mediana 0,6 · média 20,9 UI/mL</span></div>
+      <div class="g"><h3>Percentual por linha</h3><p>Calcular a porcentagem dentro de cada grupo permite comparar grupos de tamanhos diferentes, como mulheres e homens.</p><span class="ex">anti-TPO+: 14,6% das mulheres · 7,6% dos homens</span></div>
+      <div class="g"><h3>Valores atípicos</h3><p>São valores muito acima ou abaixo da maioria. Aqui eles não são erros: muitas vezes são justamente as pessoas com a tireoide alterada.</p><span class="ex">TSH atípico: 35,7% têm o anticorpo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIMITES -->
+<section id="limites">
+  <div class="sec-head">
+    <span class="kicker">09 · Limites e fontes</span>
+    <h2>O que estes dados não dizem</h2>
+  </div>
+  <div class="body-grid">
+    <div class="stack" style="gap:28px">
+      <ul class="lim col">
+        <li>Os dados são dos Estados Unidos, não do Brasil.</li>
+        <li>A pergunta sobre diagnóstico vale para qualquer problema de tireoide, não só para o Hashimoto.</li>
+        <li>Ter o anticorpo mostra que o corpo está atacando a tireoide, mas não quer dizer que a pessoa já esteja doente.</li>
+        <li>Não levei em conta quem toma remédio para a tireoide.</li>
+        <li>Cada pessoa foi examinada uma vez só. Por isso, os dados não mostram como a doença muda com o tempo nem o que causa a doença.</li>
+      </ul>
+      <div class="refs">
+        <span class="kicker">Fontes</span>
+        <span>CDC/NCHS. NHANES 2007–2012, arquivos THYROD, DEMO, MCQ e BMX. <a href="https://wwwn.cdc.gov/nchs/nhanes/">wwwn.cdc.gov/nchs/nhanes</a></span>
+        <span>CDC/NCHS. Laboratory Procedure Manual: Thyroid Peroxidase Antibodies (2011–2012).</span>
+        <span>Hollowell JG et al. Serum TSH, T4, and thyroid antibodies in the United States population (1988 to 1994): NHANES III. J Clin Endocrinol Metab, 2002.</span>
+        <span>NIDDK. Hashimoto's Disease. <a href="https://www.niddk.nih.gov/health-information/endocrine-diseases/hashimotos-disease">niddk.nih.gov</a></span>
+        <span>Manual MSD (versão para a família). Tireoidite de Hashimoto. <a href="https://www.msdmanuals.com/pt-br/casa/dist%C3%BArbios-hormonais-e-metab%C3%B3licos/dist%C3%BArbios-da-tireoide/tireoidite-de-hashimoto">msdmanuals.com</a></span>
+        <span>Office on Women's Health (EUA). Hashimoto's disease. <a href="https://www.womenshealth.gov/a-z-topics/hashimotos-disease">womenshealth.gov</a></span>
+        <span>IBGE. Pesquisa Nacional de Saúde (PNS). <a href="https://www.ibge.gov.br/estatisticas/sociais/saude/9160-pesquisa-nacional-de-saude.html">ibge.gov.br</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-bottom:64px">
+  <div class="body-grid">
+    <div class="stack" style="gap:18px">
+      <p class="closing">A maioria das pessoas com sinais de autoimunidade na tireoide não sabe que os tem. Um exame de sangue simples pode mudar isso.</p>
+      <p class="col" style="color:var(--ink-2);font-size:1rem">Este site é um trabalho acadêmico e não substitui orientação médica. Se você se identificou com algo aqui, converse com um médico sobre os exames de TSH e anti-TPO.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Julia Alcântara Ferraz Teixeira · Projeto A2, Parte 2 · Novembro de 2026</span>
+  <span>Dados: NHANES 2007–2012 (CDC/NCHS)</span>
+</footer>
+</div>
+
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+  /* ---------- waffle: 100 adultos (estimativa ponderada) ---------- */
+  var W = document.getElementById('waffle');
+  // posições dos 12 anti-TPO+, espalhadas pela grade
+  var POS = [3,14,27,31,45,52,58,66,73,81,88,96];
+  var SEM = [3,14,31,45,58,66,81,96];       // 8 sem diagnóstico (69% de 12)
+  var TSH = [58];                            // ~1 com TSH > 4,5 sem saber (13% de 8)
+  var dots = [];
+  for (var i=0;i<100;i++){ var d=document.createElement('div'); d.className='dot'; W.appendChild(d); dots.push(d); }
+
+  var CAPS = [
+    'Imagine <b>100 adultos</b> quaisquer.',
+    '<b>12</b> deles têm no sangue o anticorpo que é o sinal do Hashimoto.',
+    'Desses 12, <b>8 nunca ouviram</b> de um médico que têm problema na tireoide.',
+    'E <b>1</b> desses 8 já tem a tireoide começando a falhar, sem saber.'
+  ];
+  var LEG = [
+    [['var(--neg)','Adulto']],
+    [['var(--ink-2)','Com o anticorpo'],['var(--neg)','Sem o anticorpo']],
+    [['var(--accent)','Com o anticorpo, sem diagnóstico'],['var(--calm)','Com o anticorpo, com diagnóstico']],
+    [['var(--accent)','Sem diagnóstico'],['var(--calm)','Com diagnóstico'],['transparent','Anel: TSH alto']]
+  ];
+  function setStep(s){
+    dots.forEach(function(d,i){
+      d.className='dot';
+      var p = POS.indexOf(i)>-1, sem = SEM.indexOf(i)>-1;
+      if (s>=1 && p) d.classList.add('pos');
+      if (s>=2 && p) d.classList.add(sem?'sem':'com');
+      if (s>=3 && TSH.indexOf(i)>-1) d.classList.add('tsh');
+    });
+    document.getElementById('wcap').innerHTML = CAPS[s];
+    document.getElementById('wlegend').innerHTML = LEG[s].map(function(l){
+      var st = l[0]==='transparent' ? 'background:transparent;box-shadow:0 0 0 2px var(--accent)' : 'background:'+l[0];
+      return '<span><i style="'+st+'"></i>'+l[1]+'</span>';
+    }).join('');
+    document.querySelectorAll('.steps button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.step===s)); });
+  }
+  document.querySelectorAll('.steps button').forEach(function(b){ b.addEventListener('click', function(){ setStep(+b.dataset.step); }); });
+  setStep(2);
+
+  /* ---------- tooltip ---------- */
+  var tip = document.getElementById('tip');
+  function bindTip(el, html){
+    el.addEventListener('mousemove', function(e){ tip.innerHTML = html; tip.style.opacity=1;
+      var x = Math.min(e.clientX+14, window.innerWidth-250); tip.style.left=x+'px'; tip.style.top=(e.clientY+14)+'px'; });
+    el.addEventListener('mouseleave', function(){ tip.style.opacity=0; });
+  }
+
+  /* ---------- barras: quem ---------- */
+  var MAX = 15;
+  var DATA = {
+    sexo:  {rows:[['Feminino',14.6,641,4385],['Masculino',7.6,326,4314]],
+            note:'Entre as mulheres, 14,6% têm o anticorpo. Entre os homens, 7,6%. É quase o dobro.'},
+    idade: {rows:[['20–39 anos',7.2,207,2883],['40–59 anos',12.5,349,2803],['60+ anos',13.6,411,3013]],
+            note:'Quanto mais velha a pessoa, mais comum é o anticorpo. O maior salto acontece depois dos 40 anos.'},
+    etnia: {rows:[['Branco não hispânico',12.9,517,4014],['Mexicano-americano',11.7,163,1398],['Outro hispânico',11.7,112,957],['Outra / multirracial',10.1,63,622],['Negro não hispânico',6.6,112,1708]],
+            note:'Entre pessoas negras, o anticorpo aparece com metade da frequência das pessoas brancas (6,6% contra 12,9%).'},
+    imc:   {rows:[['Baixo peso',12.8,18,141],['Normal',10.7,256,2394],['Sobrepeso',11.2,330,2942],['Obesidade',11.2,346,3100]],
+            note:'O peso não faz diferença: o anticorpo aparece quase na mesma proporção em todas as faixas de IMC.'}
+  };
+  function fmt(v){ return v.toFixed(1).replace('.',','); }
+  function int(v){ return v.toLocaleString('pt-BR'); }
+  function renderBars(container, rows, opts){
+    container.innerHTML='';
+    var ref = opts && opts.ref;
+    rows.forEach(function(r){
+      var row = document.createElement('div'); row.className='bar-row';
+      row.innerHTML = '<span class="lab">'+r[0]+'</span><div class="track"><div class="fill" style="width:0;'+(r[4]?'background:'+r[4]:'')+'"></div></div><span class="val num">'+fmt(r[1])+'%</span>';
+      container.appendChild(row);
+      var f=row.querySelector('.fill');
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ f.style.width=(r[1]/MAX*100)+'%'; }); });
+      bindTip(row, '<b>'+r[0]+'</b><br>'+fmt(r[1])+'%'+(r[2]?' · '+int(r[2])+' de '+int(r[3])+' pessoas':''));
+    });
+    if (ref){
+      var line = document.createElement('div'); line.className='refline';
+      line.style.setProperty('--r', ref/MAX);
+      line.innerHTML = '<span>média '+fmt(ref)+'%</span>';
+      container.appendChild(line);
+    }
+  }
+  var bars = document.getElementById('bars');
+  var current='sexo';
+  function show(k){
+    current=k;
+    document.querySelectorAll('.tabs button').forEach(function(b){ b.setAttribute('aria-selected', String(b.dataset.k===k)); });
+    bars.setAttribute('aria-labelledby','tab-'+k);
+    renderBars(bars, DATA[k].rows, {ref:11.1});
+    document.getElementById('bars-note').textContent = DATA[k].note;
+  }
+  document.querySelectorAll('.tabs button').forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.k); }); });
+  show('sexo');
+
+  /* ---------- 100% empilhado: diagnóstico ---------- */
+  var ST = [['Todos com o anticorpo',71.2,686,964],['Mulheres com o anticorpo',64.9,415,639],['Homens com o anticorpo',83.4,271,325]];
+  var sc = document.getElementById('stacks');
+  ST.forEach(function(r){
+    var row=document.createElement('div'); row.className='srow';
+    row.innerHTML='<span class="lab">'+r[0]+'<small>n = '+int(r[3])+'</small></span><div class="stack100"><div class="s" style="width:'+r[1]+'%">'+fmt(r[1])+'% sem</div><div class="c" style="width:'+(100-r[1])+'%">'+fmt(100-r[1])+'%</div></div>';
+    sc.appendChild(row);
+    bindTip(row.querySelector('.s'), '<b>'+r[0]+'</b><br>'+int(r[2])+' de '+int(r[3])+' nunca receberam diagnóstico ('+fmt(r[1])+'%)');
+    bindTip(row.querySelector('.c'), '<b>'+r[0]+'</b><br>'+int(r[3]-r[2])+' de '+int(r[3])+' já receberam diagnóstico ('+fmt(100-r[1])+'%)');
+  });
+
+  /* ---------- TSH elevado ---------- */
+  renderBars(document.getElementById('tshbars'), [
+    ['Sem o anticorpo',3.2,null,null,'var(--neg)'],
+    ['Com o anticorpo',14.8],
+    ['Com o anticorpo, sem diagnóstico',13.0]
+  ]);
+})();
+</script>
+</body>
+</html>
